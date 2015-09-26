@@ -1,0 +1,30 @@
+* {
+	font-family:	consolas;
+
+	padding:		0;
+	margin:			0;
+}
+
+html, body {
+	height:			100%;
+	width:			100%;
+}
+
+#container {
+	float:			left;
+
+	height:			100%;
+	width:			100%;
+}
+
+svg {
+	float:			left;
+
+	width:			100%;
+	height:			100%;
+}
+
+rect.box {
+
+	fill:			red;
+}
