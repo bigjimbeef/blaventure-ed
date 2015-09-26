@@ -6,7 +6,10 @@ $(document).ready(function() {
 
 	main();
 
-	$('svg').svgPan('viewport');
+	$('svg').svgPan('viewport', {
+		minZoom: 0.5,
+		maxZoom: 3,
+	});
 });
 
 

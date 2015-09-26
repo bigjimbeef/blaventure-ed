@@ -122,7 +122,7 @@
     var NONE = 0,
         PAN = 1,
         DRAG = 2,
-        init = function (root, svgRoot, enablePan, enableZoom, enableDrag, zoomScale) {
+        init = function (root, svgRoot, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom) {
 
             var state = NONE,
                 stateTarget,
@@ -195,6 +195,7 @@
                         evt.preventDefault();
                     }
 
+
                     evt.returnValue = false;
                     recentOffset = $root.offset();
 
@@ -203,6 +204,13 @@
                         g = svgRoot,
                         p = getEventPoint(evt),
                         k;
+
+                    // Min/max scale.
+                    var scale = g.getCTM().a;
+                    if ( ( scale <= minZoom && delta < 0 ) || ( scale > maxZoom && delta > 0 ) ) {
+                        console.log(scale, minZoom, maxZoom, delta);
+                        return;
+                    }
 
                     p = p.matrixTransform(g.getCTM().inverse());
 
@@ -352,11 +360,17 @@
        @param enableDrag Boolean enable or disable dragging (default disabled)
        @param zoomScale Float zoom sensitivity, defaults to .2
     **/
-    $.fn.svgPan = function (viewportId, enablePan, enableZoom, enableDrag, zoomScale) {
-        enablePan = typeof enablePan !== 'undefined' ? enablePan : true;
-        enableZoom = typeof enableZoom !== 'undefined' ? enableZoom : true;
-        enableDrag = typeof enableDrag !== 'undefined' ? enableDrag : false;
-        zoomScale = typeof zoomScale !== 'undefined' ? zoomScale : 0.2;
+    $.fn.svgPan = function (viewportId, options) {
+        
+        options = options || {};
+
+        var enablePan   = typeof options.enablePan  !== 'undefined' ? options.enablePan     : true;
+        var enableZoom  = typeof options.enableZoom !== 'undefined' ? options.enableZoom    : true;
+        var enableDrag  = typeof options.enableDrag !== 'undefined' ? options.enableDrag    : false;
+        var zoomScale   = typeof options.zoomScale  !== 'undefined' ? options.zoomScale     : 0.2;
+
+        var minZoom     = typeof options.minZoom    !== 'undefined' ? options.minZoom       : null;
+        var maxZoom     = typeof options.maxZoom    !== 'undefined' ? options.maxZoom       : null;
 
         return $.each(this, function (i, el) {
             var $el = $(el),
@@ -366,7 +380,7 @@
             if ($el.is('svg') && $el.data('SVGPan') !== true) {
                 viewport = $el.find('#' + viewportId)[0];
                 if (viewport) {
-                    init($el[0], viewport, enablePan, enableZoom, enableDrag, zoomScale);
+                    init($el[0], viewport, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom);
                 } else {
                     throw "Could not find viewport with id #" + viewportId;
                 }
