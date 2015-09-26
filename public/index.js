@@ -9,24 +9,24 @@ $(document).ready(function() {
 	$('svg').svgPan('viewport', {
 		minZoom: 0.5,
 		maxZoom: 3,
+		panButton: 1
 	});
 });
 
-
-
-GRID_SIZE = 40;
+MAP_SIZE 	= 100;
+TILE_SIZE	= 40;
 
 function markLocation(targetX, targetY, viewport) {
 
 	// We find the closest matching grid square to that target X and Y
-	var closestX = Math.floor(targetX / GRID_SIZE) * GRID_SIZE;
-	var closestY = Math.floor(targetY / GRID_SIZE) * GRID_SIZE;
+	var closestX = Math.floor(targetX / TILE_SIZE) * TILE_SIZE;
+	var closestY = Math.floor(targetY / TILE_SIZE) * TILE_SIZE;
 
 	viewport.append("rect")
 		.attr("x", closestX)
 		.attr("y", closestY)
-		.attr("width", GRID_SIZE)
-		.attr("height", GRID_SIZE)
+		.attr("width", TILE_SIZE)
+		.attr("height", TILE_SIZE)
 		.attr("fill", "red");
 
 	
@@ -56,9 +56,6 @@ function main() {
 
 		var currentX	= viewportTranslate.x;
 		var currentY	= viewportTranslate.y;
-
-		console.log(evt.clientX, evt.clientY);
-		console.log(viewportTranslate, viewportScale);
 
 		var targetX		= ( evt.clientX - currentX ) / viewportScale.x;
 		var targetY		= ( evt.clientY - currentY ) / viewportScale.y;

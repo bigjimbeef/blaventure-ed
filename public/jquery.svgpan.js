@@ -122,7 +122,7 @@
     var NONE = 0,
         PAN = 1,
         DRAG = 2,
-        init = function (root, svgRoot, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom) {
+        init = function (root, svgRoot, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom, panButton) {
 
             var state = NONE,
                 stateTarget,
@@ -208,7 +208,6 @@
                     // Min/max scale.
                     var scale = g.getCTM().a;
                     if ( ( scale <= minZoom && delta < 0 ) || ( scale > maxZoom && delta > 0 ) ) {
-                        console.log(scale, minZoom, maxZoom, delta);
                         return;
                     }
 
@@ -296,6 +295,10 @@
                     //var g = getRoot(svgDoc);
                     var g = svgRoot;
 
+                    if ( panButton != null && evt.button != panButton ) {
+                        return;
+                    }
+
                     // Pan anyway when drag is disabled and the user clicked on an element
                     if (evt.target.tagName === "svg" || !enableDrag) {
                         // Pan mode
@@ -372,6 +375,8 @@
         var minZoom     = typeof options.minZoom    !== 'undefined' ? options.minZoom       : null;
         var maxZoom     = typeof options.maxZoom    !== 'undefined' ? options.maxZoom       : null;
 
+        var panButton   = typeof options.panButton  !== 'undefined' ? options.panButton     : null;
+
         return $.each(this, function (i, el) {
             var $el = $(el),
                 svg,
@@ -380,7 +385,7 @@
             if ($el.is('svg') && $el.data('SVGPan') !== true) {
                 viewport = $el.find('#' + viewportId)[0];
                 if (viewport) {
-                    init($el[0], viewport, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom);
+                    init($el[0], viewport, enablePan, enableZoom, enableDrag, zoomScale, minZoom, maxZoom, panButton);
                 } else {
                     throw "Could not find viewport with id #" + viewportId;
                 }
